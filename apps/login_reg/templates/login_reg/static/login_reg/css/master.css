@@ -1,0 +1,27 @@
+th, td {
+    font-weight: lighter;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+    text-align:  left;
+}
+table{
+    width: 85%;
+    min-width: 1000px;
+}
+th.date, td.date {
+    font-weight: lighter;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+    text-align: justify;
+    width:160px;
+}
+th.action, td.action {
+    font-weight: lighter;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+    text-align: center;
+    width:90px;
+}
+form.mybutton{
+    display: inline;
+}

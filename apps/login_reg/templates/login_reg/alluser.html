@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>django wall</title>
+        {% load staticfiles %}
+       <link rel="stylesheet" href="{% static 'login_reg/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
+    </head>
+    <body>
+        <table>
+              <tr>
+                <th>ID</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th class='date'>Created</th>
+              </tr>
+              {% for user in users %}
+              <tr>
+                <th>{{ users.id }}</th>
+                <th>{{ users.first_name }}</th>
+                <th>{{ users.last_name }}</th>
+                <th>{{ users.email }}</th>
+                <th class='date'>{{ users.created_at }}</th>
+              </tr>
+              {% endfor %}
+            </table>
+    </body>
+</html>
