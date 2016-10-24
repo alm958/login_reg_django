@@ -10,13 +10,6 @@ NAME_REGEX = re.compile(r'^[a-zA-Z]+[a-zA-Z-]*[a-zA-Z]+$')
 class UserManager(models.Manager):
     def register(self, **kwargs):
         message_list = []
-        print "*"*20
-        print kwargs['dob']
-        print "*"*20
-        dob_date = datetime.strptime(kwargs['dob'], "%Y-%m-%d").date()
-        print "*"*20
-        print dob_date
-        print "*"*20
         min_age = 13
         today = date.today()
         if not (NAME_REGEX.match(kwargs['first_name']) and NAME_REGEX.match(kwargs['last_name'])):
@@ -29,37 +22,39 @@ class UserManager(models.Manager):
             message_list.append("Password must be at least eight characters in length")
         elif kwargs['password'] != kwargs['c_password']:
             message_list.append("Password and Password Confirmation do not match.")
-        if (dob_date.year + min_age, dob_date.month, dob_date.day) > (today.year, today.month, today.day):
-            message_list.append("You must be {} years of age to register.".format(min_age))
+        print (kwargs['dob'] == '')
+        if kwargs['dob'] == '':
+            message_list.append("Date of birth is a required field. You must be {} years of age to register.".format(min_age))
+        else :
+            dob_date = datetime.strptime(kwargs['dob'], "%Y-%m-%d").date()
+            if (dob_date.year + min_age, dob_date.month, dob_date.day) > (today.year, today.month, today.day):
+                message_list.append("You must be {} years of age to register.".format(min_age))
 
         if len(message_list) is 0 :
             pw_hash = bcrypt.hashpw(kwargs['password'].encode(), bcrypt.gensalt())
             user = self.create(first_name=kwargs['first_name'], last_name=kwargs['last_name'], email=kwargs['email'], dob=kwargs['dob'], password=pw_hash)
-            message_list.append('New User {} {} successfully added and loged in.'.format(user.first_name, user.last_name))
-            return (True, message_list, user )
+            activeuser_dict = {'first_name' : user.first_name, 'last_name' : user.last_name, 'email' : user.email, 'dob' : user.dob, 'id' : user.id}
+            message_list.append('New User {} {} successfully registered and logged in.'.format(user.first_name, user.last_name))
+            return (True, message_list, activeuser_dict )
         else :
-            print message_list
             return (False, message_list)
 
     def login(self, **kwargs):
         message_list = []
-        print "kwargs :",kwargs
         if not EMAIL_REGEX.match(kwargs['email']):
             message_list.append('Invalid e-mail address entered. Please enter valid email address.')
         if len(kwargs['password']) < 8:
             message_list.append("Password must be at least eight characters in length")
         elif kwargs['password'] != kwargs['c_password']:
             message_list.append("Password and Password Confirmation do not match.")
-        if len(message_list) is 0 :
-            all_user_list = set(User.objects.values('email','password','first_name','last_name','id','dob'))
-            for user in all_user_list :
-                if user[0] == kwargs['email']:
-                    if bcrypt.hashpw(kwargs['password'].encode(), user['password'].encode()) ==  user['password'].encode():
-                        user = User.objects.get(email=kwargs['email'])
-                        message_list.append('User {} {} successfully loged in.'.format(user.first_name, user.last_name))
-                        return (True, message_list, user)
+        if len(message_list) == 0:
+            if User.objects.filter(email=kwargs['email']).exists():
+                user = self.get(email=kwargs['email'])
+                if bcrypt.hashpw(kwargs['password'].encode(), user.password.encode()) ==  user.password.encode() :
+                    activeuser_dict = {'first_name' : user.first_name, 'last_name' : user.last_name, 'email' : user.email, 'dob' : unicode(user.dob), 'id' : user.id}
+                    message_list.append('User {} {} successfully logged in.'.format(user.first_name, user.last_name))
+                    return (True, message_list, activeuser_dict)
             message_list.append("Email, Password combination not found.  Check and try again.")
-            return (False, message_list)
         return (False, message_list)
 
     def getusers(self, **kwargs):

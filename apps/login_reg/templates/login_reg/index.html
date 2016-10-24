@@ -4,10 +4,10 @@
         <meta charset="utf-8">
         <title>django wall</title>
         {% load staticfiles %}
-       <link rel="stylesheet" href="{% static 'wall/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
+       <link rel="stylesheet" href="{% static 'login_reg/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
     </head>
     <body>
-        <h2>Please loging or register to proceed</h2>
+        <h2>Please login or register to proceed</h2>
         <h2>Login</h2>
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
@@ -30,7 +30,7 @@
 
         {% if messages %}
         {% for message in messages %}
-        <p>{{ message }}</p>
+        <p{% if message.tags %} class='{{message.tags}}'{% endif %}>{{ message }}</p>
         {% endfor %}
         {% endif %}
     </body>
