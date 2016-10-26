@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Delete User?</title>
+    </head>
+    <body>
+        <h2>Are you certain you wish to permanantly delete the following user?</h2>
+        <p>Email         : {{email.email}}</p>
+        <form  class='mybutton' action="{% url 'show_emails' %}" method="post">{% csrf_token %}<input type="submit" value="No do not delete"></form>
+        <form  class='mybutton' action="{% url 'del_email' id=email.id %}" method="post">{% csrf_token %}<input type="submit" value="Yes, I want to delete this email"></form>
+
+    </body>
+</html>

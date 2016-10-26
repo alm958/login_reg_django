@@ -8,14 +8,52 @@
     </head>
     <body>
         {% if messages %}
-        {% for message in messages %}
-        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-        {% endfor %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
         {% endif %}
+        <p>Current loged in user is {{request.session.activeuser.first_name }} {{request.session.activeuser.last_name }}. </p>
         <a href="{% url 'logout' %}"><button type="button" name="logout">Logout</button></a>
-        <h2>User Info for {{request.session.activeuser.first_name }}  {{request.session.activeuser.last_name }}</h2>
-        <p>User ID : {{request.session.activeuser.id}}</p>
-        <p>Email : {{request.session.activeuser.email}}</p>
-        <p>Date of Birth : {{request.session.activeuser.dob}}</p>
+        {% if user_count == 1 %}
+            <h2>User Info for {{users.0.first_name }}  {{users.0.last_name }}</h2>
+            <p>User ID : {{users.0.id}}</p>
+            <p>Email : {{users.0.email}}</p>
+            <p>Date of Birth : {{users.0.dob}}</p>
+            <a href="{% url 'edituser' id=users.0.id %}"><button type="button" name="edit">Edit</button></a>
+            <a href="{% url 'del_user_prompt' id=users.0.id %}"><button type="button" name="delete">Delete</button></a>
+            {% if request.session.del_user %}
+                <p>Are you certain you wish to permanantly delete this user?</p>
+                <form  class='mybutton' action="{% url 'deleteuser' id=users.0.id %}" method="post">{% csrf_token %}<input type="submit" value="Yes, I want to delete this user"></form>
+                <form  class='mybutton' action="{% url 'keep_user' id=users.0.id %}" method="post">{% csrf_token %}<input type="submit" value="No do not delete"></form>
+            {% endif %}
+            <form  class='mybutton' action="{% url 'showusers' id='' %}" method="post">{% csrf_token %}<input type="submit" value="Show all users"></form>
+        {% else %}
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>first name</th>
+                    <th>last name</th>
+                    <th>email</th>
+                    <th>DOB</th>
+                    <th>added</th>
+                    <th>updated</th>
+                    <th class='action'>Action</th>
+                </tr>
+            {% for user in users %}
+                <tr>
+                    <th>{{ user.id }}</th>
+                    <th>{{ user.first_name}}</th>
+                    <th>{{ user.last_name }}</th>
+                    <th>{{ user.email }}</th>
+                    <th>{{ user.dob }}</th>
+                    <th>{{ user.created_at }}</th>
+                    <th>{{ user.updated_at}}</th>
+                    <th class='action'>
+                    <form  class='mybutton' action="{% url 'showusers' id=user.id %}" method="post">{% csrf_token %}<input type="submit" value="show"></form>
+                    </th>
+                </tr>
+            {% endfor %}
+            </table>
+        {% endif %}
     </body>
 </html>

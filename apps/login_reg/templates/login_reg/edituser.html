@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>django wall</title>
+        {% load staticfiles %}
+       <link rel="stylesheet" href="{% static 'login_reg/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
+    </head>
+    <body>
+        <h3>Edit {{request.session.activeuser.first_name }} {{request.session.activeuser.last_name }}</h3>
+        <p>Current password must be entered to implement any changes.</p>
+        <form action="{% url 'updateuser' id=request.session.activeuser.id %}" method="post">
+            {% csrf_token %}
+            <label>First Name :      <br><input type="text"     name="first_name" value="{{request.session.activeuser.first_name}}">  </label><br>
+            <label>Last Name :       <br><input type="text"     name="last_name" value="{{request.session.activeuser.last_name}}">    </label><br>
+            <label>e-mail :          <br><input type="text"     name="email" value="{{request.session.activeuser.email}}">        </label><br>
+            <label>Date of Birth :   <br><input type="date"     name="dob" value="{{request.session.activeuser.dob}}">          </label><br>
+            <label>Current Password:         <br><input type="password" name="old_password" >    </label><br>
+            <p>If no password change needed leave fields below empty.</p>
+            <label>New Password :<br><input type="password" name="new_password" /> </label><br>
+            <label>Confirm New Password :<br><input type="password" name="c_new_password" /> </label>
+                                     <br><input type="submit"   name="submit" value='Submit'/>
+        </form>
+        {% if messages %}
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+    </body>
+</html>

@@ -2,6 +2,10 @@
     color:red;
     font-weight: bold;
 }
+.success{
+    color:green;
+    font-weight: bold;
+}
 th, td {
     font-weight: lighter;
     border-bottom: 1px solid #ddd;
