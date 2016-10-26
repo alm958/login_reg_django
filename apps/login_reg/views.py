@@ -55,7 +55,13 @@ def logout(request):
     return redirect(reverse( 'index' ) )
 
 def edituser(request, id):
-    return render(request, 'login_reg/edituser.html' )
+    users = User.objects.getusers(id=id)
+    print users
+    print users[0].dob
+    context = {
+    'users' : users,
+    }
+    return render(request, 'login_reg/edituser.html', context )
 
 def updateuser(request, id):
     result = User.objects.updateuser(id=id,first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], dob=request.POST['dob'], old_password=request.POST['old_password'], new_password=request.POST['new_password'], c_new_password=request.POST['c_new_password'])
@@ -67,7 +73,6 @@ def updateuser(request, id):
     else :
         for success_message in result[1] :
             messages.success(request, success_message)
-        request.session['activeuser'] = result[2]
         return redirect(reverse( 'showusers', kwargs={'id': id}))
 
 def del_user_prompt(request, id):

@@ -33,10 +33,6 @@ class UserManager(models.Manager):
             pw_hash = bcrypt.hashpw(kwargs['password'].encode(), bcrypt.gensalt())
             user = self.create(first_name=kwargs['first_name'], last_name=kwargs['last_name'], email=kwargs['email'], dob=kwargs['dob'], password=pw_hash)
             activeuser_dict = {'first_name' : user.first_name, 'last_name' : user.last_name, 'email' : user.email, 'dob' : user.dob, 'id' : user.id}
-            print "model_reg_user_"*6
-            print user
-            print "model_reg_activeuser_dict_"*4
-            print activeuser_dict
             message_list.append('New User {} {} successfully registered and logged in.'.format(user.first_name, user.last_name))
             return (True, message_list, activeuser_dict )
         else :
