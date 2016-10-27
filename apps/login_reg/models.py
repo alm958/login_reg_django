@@ -5,7 +5,7 @@ import bcrypt
 import re
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+.[a-zA-Z]*$')
-NAME_REGEX = re.compile(r'^[a-zA-Z]+[a-zA-Z-]*[a-zA-Z]+$')
+NAME_REGEX = re.compile(r"^[a-zA-Z]{1}'{0,1}[a-zA-Z]+(-?[a-zA-Z]{1}'{0,1}[a-zA-Z]+)?$")
 min_age = 13
 
 class UserManager(models.Manager):
@@ -68,8 +68,7 @@ class UserManager(models.Manager):
         if not EMAIL_REGEX.match(kwargs['email']):
             message_list.append('Invalid e-mail address entered. Please enter valid email address.')
         if bcrypt.hashpw(kwargs['old_password'].encode(), user.password.encode()) ==  user.password.encode() :
-            print "old passowrd matched"
-            print "*"*30
+            print "old passowrd matched the database"
             if len(kwargs['new_password']) > 0 or len(kwargs['c_new_password']) > 0 :
                 if len(kwargs['new_password']) < 8:
                     message_list.append("Password must be at least eight characters in length")
@@ -86,12 +85,12 @@ class UserManager(models.Manager):
         if len(message_list) is 0 :
             if len(kwargs['new_password']) > 0 or len(kwargs['c_new_password']) > 0 :
                 pw_hash = bcrypt.hashpw(kwargs['new_password'].encode(), bcrypt.gensalt())
-                self.filter(id=kwargs['id']).update(first_name=kwargs['first_name'],last_name=kwargs['last_name'],email=kwargs['email'],dob=kwargs['dob'],password=pw_hash)
+                self.filter(id=kwargs['id']).update(first_name=kwargs['first_name'],last_name=kwargs['last_name'],email=kwargs['email'],updated_at=datetime.now(), dob=kwargs['dob'],password=pw_hash)
             else:
-                self.filter(id=kwargs['id']).update(first_name=kwargs['first_name'],last_name=kwargs['last_name'],email=kwargs['email'],dob=kwargs['dob'])
+                self.filter(id=kwargs['id']).update(first_name=kwargs['first_name'],last_name=kwargs['last_name'],email=kwargs['email'],updated_at=datetime.now(),dob=kwargs['dob'])
             user = self.get(id=kwargs['id'])
             activeuser_dict = {'first_name' : user.first_name, 'last_name' : user.last_name, 'email' : user.email, 'dob' : unicode(user.dob), 'id' : user.id}
-            message_list.append('User {} {} successfully updated and still logged in.'.format(user.first_name, user.last_name))
+            message_list.append('User {} {} successfully updated.'.format(user.first_name, user.last_name))
             return (True, message_list, activeuser_dict)
         else :
             message_list.append("No updates applied.  Check values and resubmit")

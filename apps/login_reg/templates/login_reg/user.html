@@ -7,14 +7,16 @@
        <link rel="stylesheet" href="{% static 'login_reg/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
     </head>
     <body>
-        {% if messages %}
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-        <p>Current loged in user is {{request.session.activeuser.first_name }} {{request.session.activeuser.last_name }}. </p>
+        <p>Current logged in user is {{request.session.activeuser.first_name }} {{request.session.activeuser.last_name }}. </p>
         <a href="{% url 'logout' %}"><button type="button" name="logout">Logout</button></a>
         {% if user_count == 1 %}
+            <form  class='mybutton' action="{% url 'showusers' id='' %}" method="post">{% csrf_token %}<input type="submit" value="Show all users"></form>
+            <hr>
+            {% if messages %}
+                {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
             <h2>User Info for {{users.0.first_name }}  {{users.0.last_name }}</h2>
             <p>User ID : {{users.0.id}}</p>
             <p>Email : {{users.0.email}}</p>
@@ -26,8 +28,8 @@
                 <form  class='mybutton' action="{% url 'deleteuser' id=users.0.id %}" method="post">{% csrf_token %}<input type="submit" value="Yes, I want to delete this user"></form>
                 <form  class='mybutton' action="{% url 'keep_user' id=users.0.id %}" method="post">{% csrf_token %}<input type="submit" value="No do not delete"></form>
             {% endif %}
-            <form  class='mybutton' action="{% url 'showusers' id='' %}" method="post">{% csrf_token %}<input type="submit" value="Show all users"></form>
         {% else %}
+        <hr>
             <table>
                 <tr>
                     <th>ID</th>

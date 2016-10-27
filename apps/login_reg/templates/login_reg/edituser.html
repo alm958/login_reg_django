@@ -7,6 +7,11 @@
        <link rel="stylesheet" href="{% static 'login_reg/css/master.css' %}"media="screen" title="no title"  charset="utf-8">
     </head>
     <body>
+        <p>Current logged in user is {{request.session.activeuser.first_name }} {{request.session.activeuser.last_name }}. </p>
+        <a href="{% url 'logout' %}"><button type="button" name="logout">Logout</button></a>
+        <form  class='mybutton' action="{% url 'showusers' id=users.0.id %}" method="post">{% csrf_token %}<input type="submit" value="Return without saving changes"></form>
+        <form  class='mybutton' action="{% url 'showusers' id='' %}" method="post">{% csrf_token %}<input type="submit" value="Show all users (no changes will be saved)"></form>
+        <hr>
         <h3>Edit {{users.0.first_name }} {{users.0.last_name }}</h3>
         <p>Current password must be entered to implement any changes.</p>
         <form action="{% url 'updateuser' id=users.0.id %}" method="post">
@@ -14,7 +19,7 @@
             <label>First Name :      <br><input type="text"     name="first_name" value="{{users.0.first_name}}">  </label><br>
             <label>Last Name :       <br><input type="text"     name="last_name" value="{{users.0.last_name}}">    </label><br>
             <label>e-mail :          <br><input type="text"     name="email" value="{{users.0.email}}">        </label><br>
-            <label>Date of Birth :   <br><input type="date"     name="dob" value="{{users.0.dob}}">          </label><br>
+            <label>Date of Birth :   <br><input type="date"     name="dob" value="{{users.0.dob|date:"Y-m-d"}}">          </label><br>
             <label>Current Password:         <br><input type="password" name="old_password" >    </label><br>
             <p>If no password change needed leave fields below empty.</p>
             <label>New Password :<br><input type="password" name="new_password" /> </label><br>

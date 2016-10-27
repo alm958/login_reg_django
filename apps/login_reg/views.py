@@ -84,7 +84,13 @@ def keep_user(request, id):
     return redirect(reverse( 'showusers', kwargs={'id': id}))
 
 def deleteuser(request, id):
-    if request.session['activeuser']['id'] == id :
-        request.session.pop('name', None)
+    request.session['del_user'] = False
+    temp_id = int(id)
+    temp_session_id = request.session['activeuser']['id']
+    if temp_session_id == temp_id  :
+        print "in if statement"
+        del request.session['activeuser']
+        User.objects.filter(id=id).delete()
+        return redirect(reverse( 'index' ) )
     User.objects.filter(id=id).delete()
-    return redirect(reverse( 'index' ) )
+    return redirect(reverse( 'showusers', kwargs={'id': ''}))
